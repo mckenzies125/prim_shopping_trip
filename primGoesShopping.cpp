@@ -11,6 +11,7 @@ using namespace std;
 
 class AdjacencyList{
 public:
+  int vertices;
   vector<Node*> adjList;
   struct Node{
     int index;
@@ -22,11 +23,40 @@ public:
       next = nullptr;
     }
   };
-  Node* head;
+  Node* head; // We might not need this since the value stored in the vector are head pointers already so indexing into the vector will get us the head already
   Node* lightEdge;//use head and lightEdge in constructor
-  void addingEdge(); //finish later
-  void findEdge();
+
+  void addingEdge(int source, int dest, int weight){
+    Node *newNode = new Node(dest, weight); // creates a newNode
+    newNode->next = adjList[source]; // indexes into the adjacencyList based on source node, then sets the newNode's next pointer to the Node pointer in the vector (that's the head of the LL at that index)
+    adjList[source] = newNode; // makes the newNode pointer the new "head" which is what is stored in the vector
+
+    //the reverse edge
+    newNode = new Node(source, weight);
+    newNode->next = adjList[dest];
+    adjList[dest] = newNode;
+  }
+
+  void findEdge(); // My idea for how this would work is we pass in the set. Then we will parse each node in the set and use a helper function that takes in a single source node from the set that returns the light edge from that source node. When we get to this function, we will then compare the edge candidates and then choose the best option.
+
+  AdjacencyList(int v){
+    vertices = v;
+    adjList.resize(vertices);
+    for (int i = 0; i < vertices; i++){
+      adjList[i] = nullptr;
+    }
+  }
   
+  ~AdjacencyList(){
+    for (int i = 0; i < vertices; i++){
+      Node *curr = adjList[i];
+      while (curr != nullptr){
+	Node *temp = curr;
+	curr = curr->next;
+	delete temp;
+      }
+    }
+  }
 }
 //set will be a int vector and each val will be respective index in adjList
 
