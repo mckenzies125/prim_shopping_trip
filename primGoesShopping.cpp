@@ -8,21 +8,25 @@
 using namespace std;
 #define INF 1e308;
 
+struct Node{
+  int index;
+  int dist;
+  Node* next;
+};
 
 class AdjacencyList{
 public:
+  int minWeight = INF;
   int vertices;
   vector<Node*> adjList;
-  struct Node{
-    int index;
-    int dist;
-    Node* next;
-    Node(int i, int d){
-      index = i;
-      dist = d;
-      next = nullptr;
-    }
-  };
+  vector<int> MST;
+  vector<int> not_MST;
+  Node(int i, int d){
+    index = i;
+    dist = d;
+    next = nullptr;
+  }
+  
   Node* head; // We might not need this since the value stored in the vector are head pointers already so indexing into the vector will get us the head already
   Node* lightEdge;//use head and lightEdge in constructor
 
@@ -37,7 +41,32 @@ public:
     adjList[dest] = newNode;
   }
 
-  void findEdge(); // My idea for how this would work is we pass in the set. Then we will parse each node in the set and use a helper function that takes in a single source node from the set that returns the light edge from that source node. When we get to this function, we will then compare the edge candidates and then choose the best option.
+  void findEdge(vector<int> MST){
+    for (int i = 0; i < MST.size(); i++){
+      int linkedListIndex = MST[i];
+      Node* head = adjList[linkedListIndex];
+      traverseLinkedList(head);
+    }
+    
+  }
+
+  void traverseLinkedList(Node* theHead){
+    Node* temp = head;
+    while (temp!=nullptr){
+      bool in_not_MST = false;
+      for (int i = 0; i < not_MST.size(); i++){
+	if (temp.index == not_MST[i]){
+	  in_not_MST = true;
+	}
+      }
+      if ((temp.dist < minWeight) && (in_not_MST)){ 
+	lightEdge = temp;
+	minWeight = temp.dist;
+      }
+      temp = temp->next;
+    }
+  }
+  // My idea for how this would work is we pass in the set. Then we will parse each node in the set and use a helper function that takes in a single source node from the set that returns the light edge from that source node. When we get to this function, we will then compare the edge candidates and then choose the best option.
 
   AdjacencyList(int v){
     vertices = v;
