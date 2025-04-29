@@ -4,6 +4,7 @@
 #include <vector>
 #inlcude "prim_shopping_trip.h"
 #include <iostream>
+#include <ctime>
 
 using namespace std;
 #define INF 1e308;
@@ -27,7 +28,7 @@ public:
     next = nullptr;
   }
   
-  Node* head; // We might not need this since the value stored in the vector are head pointers already so indexing into the vector will get us the head already
+  //Node* head; // We might not need this since the value stored in the vector are head pointers already so indexing into the vector will get us the head already
   Node* lightEdge;//use head and lightEdge in constructor
 
   void addingEdge(int source, int dest, int weight){
@@ -50,7 +51,7 @@ public:
     
   }
 
-  void traverseLinkedList(Node* theHead){
+  void traverseLinkedList(Node* head){
     Node* temp = head;
     while (temp!=nullptr){
       bool in_not_MST = false;
@@ -86,10 +87,51 @@ public:
       }
     }
   }
-}
+};
 //set will be a int vector and each val will be respective index in adjList
 
+class AdjacencyMatrix{
+  int vertices;
+  vector<vector<int>> adjMatrix;
+  vector<int> MST;
+  vector<int> not_MST;
+  int minWeight = INF;
+  int matrixRow = 0;
+  
+  AdjacencyMatrix(int vertexes){
+    vertices = vertexes;
+    adjMatrix.resize(vertexes + 1, vector<int>(vertexes + 1, 0));
+    for (int i = 0; i < vertexes + 1; i++){
+      adjMatrix[i][0] = i;
+      adjMatrix[0][i] = i;
+    }
+  }
 
+  void addingEdge(int source, int dest, int weight){
+    adjMatrix[source + 1][dest + 1] = weight;
+    adjMatrix[dest + 1][source + 1] = weight;
+  }
+
+  int findEdge(vector<int> MST){ // returned int is the vertex # of the matrixColumn
+    for (int i = 0; i < MST.size(); i++){
+      tempMatrixRow = MST[i];
+      for (int j = 1; j < adjMatrix.vertexes + 1; j++){
+	bool in_not_MST = false;
+	for (int k = 0; k < not_MST.size(); k++){
+	  if (j == not_MST[k]){
+	    in_not_MST = true;
+	  }
+	}
+	if ((adjMatrix[tempMatrixRow][j] < minWeight) && (in_not_MST)){
+	  minWeight = adjMatrix[tempMatrixRow][j];
+	  matrixRow = tempMatrixRow;
+	  return j;
+	}
+      }
+    }
+    return -1; //error handle this
+  }
+}
 
 
 int prim_shopping_trip::bubbleUp(int minNode){
