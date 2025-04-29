@@ -2,12 +2,12 @@
 #define _prim_shopping_trip_
 
 #include <vector>
-#inlcude "prim_shopping_trip.h"
+#include "prim_shopping_trip.h"
 #include <iostream>
 #include <ctime>
 
 using namespace std;
-#define INF 1e308;
+#define INF 1e308
 
 struct Node{
   int index;
@@ -84,6 +84,23 @@ public:
 	Node *temp = curr;
 	curr = curr->next;
 	delete temp;
+      }
+    }
+  }
+
+  void PrimMST(){
+    for(int i = 0; i < vertices; i++){
+      not_MST.pushback(i); //initalize set of all vertices 
+    }
+    MST.pushback(0); //starting vertex is 0
+    //need to remove 0 from not_MST
+    while(not_MST.size() > 0){
+      lightEdge = nullptr;
+      findEdge(MST);
+      if(lightEdge != nullptr){
+        int newVert = lightEdge->index;
+        MST.pushback(newVert); //adds lightest edge to MST
+        //need to remove vertices from not_MST
       }
     }
   }
