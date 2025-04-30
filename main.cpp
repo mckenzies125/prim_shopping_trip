@@ -2,11 +2,13 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include "primAdjList.h"
+#include "primAdjMatrix.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]){
-  if (arc != 2){
+  if (argc != 2){
     cerr << "Usage: " << argv[0] << " input.txt\n";
     return 1;
   }
@@ -17,7 +19,7 @@ int main(int argc, char* argv[]){
   //string outputfile = argv[2];
   ifstream file(inputfile);
   if (!file.is_open()){
-    cerr << "Error opening file: " << arg[1] << "\n";
+    cerr << "Error opening file: " << argv[1] << "\n";
     return 1;
   }
 
@@ -29,7 +31,6 @@ int main(int argc, char* argv[]){
   //AdjacencyList primAdjList = new AdjacencyList(line);  // reads in the first line's value which is how many vertices are in the file
   int source, dest, weight;
   */
-
   int numVertices;
   int source;
   file >> numVertices;
@@ -40,18 +41,24 @@ int main(int argc, char* argv[]){
 
   int u, v, weight;
   
-  while(file >> u >> v >> w){
-    primAdjList.addingEdge(u, v, w);
-    primAdjMatrix.addingEdge(u, v, w);
+  while(file >> u >> v >> weight){
+    primAdjList.addingEdge(u, v, weight);
+    cout << "adjList added an edge\n";
+    primAdjMatrix.addingEdge(u, v, weight);
+    cout << "adjMatrix added an edge\n";
   }
+  cout << "after adding edges\n";
 
   vector<int> listMST;
   vector<pair<int, int>> matrixMST;
+  // add ctime tracker here in a variable
   primAdjList.PrimMST(listMST, source);
+  // another ctime tracker
   primAdjMatrix.PrimMST(matrixMST, source);
-
+  // another ctime tracker
+  
   cout << "Edges in the matrixMST:\n";
-  for (const auto& edge : mstEdges){
+  for (const auto& edge : matrixMST){
     cout << (edge.first + 1) << " - " << (edge.second + 1) << "\n";
   }
 }
