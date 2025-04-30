@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 #include "primAdjList.h"
 #include "primAdjMatrix.h"
 
@@ -43,22 +44,28 @@ int main(int argc, char* argv[]){
   
   while(file >> u >> v >> weight){
     primAdjList.addingEdge(u, v, weight);
-    cout << "adjList added an edge\n";
     primAdjMatrix.addingEdge(u, v, weight);
-    cout << "adjMatrix added an edge\n";
   }
-  cout << "after adding edges\n";
 
   vector<int> listMST;
   vector<pair<int, int>> matrixMST;
-  // add ctime tracker here in a variable
+
+  clock_t startList = clock();
   primAdjList.PrimMST(listMST, source);
-  // another ctime tracker
+  clock_t endList = clock();
+  double durationList = double(endList - startList) / CLOCKS_PER_SEC;
+
+  clock_t startMatrix = clock();
   primAdjMatrix.PrimMST(matrixMST, source);
-  // another ctime tracker
+  clock_t endMatrix = clock();
+  double durationMatrix = double(endMatrix - startMatrix) / CLOCKS_PER_SEC;
+	
   
-  cout << "Edges in the matrixMST:\n";
+  cout << "Edges in the matrixMST: \n";
   for (const auto& edge : matrixMST){
     cout << (edge.first + 1) << " - " << (edge.second + 1) << "\n";
   }
+
+  cout << "Time taken for Prim's Algorithm with Adjacency List: " << durationList << " seconds\n";
+  cout << "Time taken for Prim's Algorithm with Adjacency Matrix: " << durationMatrix << " seconds\n";
 }
