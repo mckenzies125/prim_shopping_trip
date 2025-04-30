@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <ctime>
+#include <iomanip>
 #include "primAdjList.h"
 #include "primAdjMatrix.h"
 
@@ -60,10 +61,16 @@ int main(int argc, char* argv[]){
   clock_t endMatrix = clock();
   double durationMatrix = double(endMatrix - startMatrix) / CLOCKS_PER_SEC;
 	
-  
+  cout << "Edges in the listMST: \n";
+  for (const auto& edge : listMST){
+	  cout << (edge.first + 1) << " -> " << (edge.second +1) << "\n";\
+  }
+
+  cout << "\n";
+
   cout << "Edges in the matrixMST: \n";
   for (const auto& edge : matrixMST){
-    cout << (edge.first + 1) << " - " << (edge.second + 1) << "\n";
+    cout << (edge.first + 1) << " -> " << (edge.second + 1) << "\n";
   }
 
   cout << "Time taken for Prim's Algorithm with Adjacency List: " << durationList << " seconds\n";
