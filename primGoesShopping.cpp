@@ -13,6 +13,12 @@ struct Node{
   int index;
   int dist;
   Node* next;
+
+  Node(int i, int d){
+    index = i;
+    dist = d;
+    next = nullptr;
+  }
 };
 
 class AdjacencyList{
@@ -22,11 +28,6 @@ public:
   vector<Node*> adjList;
   vector<int> MST;
   vector<int> not_MST;
-  Node(int i, int d){
-    index = i;
-    dist = d;
-    next = nullptr;
-  }
   
   //Node* head; // We might not need this since the value stored in the vector are head pointers already so indexing into the vector will get us the head already
   Node* lightEdge;//use head and lightEdge in constructor
@@ -90,16 +91,16 @@ public:
 
   void PrimMST(){
     for(int i = 0; i < vertices; i++){
-      not_MST.pushback(i); //initalize set of all vertices 
+      not_MST.push_back(i); //initalize set of all vertices 
     }
-    MST.pushback(0); //starting vertex is 0
+    MST.push_back(0); //starting vertex is 0
     //need to remove 0 from not_MST
     while(not_MST.size() > 0){
       lightEdge = nullptr;
       findEdge(MST);
       if(lightEdge != nullptr){
         int newVert = lightEdge->index;
-        MST.pushback(newVert); //adds lightest edge to MST
+        MST.push_back(newVert); //adds lightest edge to MST
         //need to remove vertices from not_MST
       }
     }
@@ -180,3 +181,5 @@ void prim_shopping_trip::selectMin(){
     //finish later
   }
 }
+
+#endif
