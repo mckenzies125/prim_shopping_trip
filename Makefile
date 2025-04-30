@@ -1,19 +1,23 @@
 CXX = g++
-CXXFLAGS = -Wall -g
+CXXFLAGS = -Wall -Wextra
 
-TARGET = program
+OBJS = main.o primAdjList.o primAdjMatrix.o
 
-SRCS = main.cpp primGoesShopping.cpp
+EXE = program
 
-OBJS = $(SRCS:.cpp=.o)
+all: $(EXE)
 
-all: $(TARGET)
+$(EXE): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS)
+main.o: main.cpp primAdjList.h primAdjMatrix.h
+	$(CXX) $(CXXFLAGS) -c main.cpp
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+primAdjList.o: primAdjList.cpp primAdjList.h
+	$(CXX) $(CXXFLAGS) -c primAdjList.cpp
 
+primAdjMatrix.o: primAdjMatrix.cpp primAdjMatrix.h
+
+	$(CXX) $(CXXFLAGS) -c primAdjMatrix.cpp
 clean:
-	rm -f $(OBJS) $(TARGET) *~
+	rm -f $(OBJS) $(EXE) *~

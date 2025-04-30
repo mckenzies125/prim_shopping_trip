@@ -6,28 +6,52 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-
-  new AdjacencyList = primAdjList;
+  if (arc != 2){
+    cerr << "Usage: " << argv[0] << " input.txt\n";
+    return 1;
+  }
+  
+  //new AdjacencyList = primAdjList;
   
   string inputfile = argv[1];
   //string outputfile = argv[2];
   ifstream file(inputfile);
-  
+  if (!file.is_open()){
+    cerr << "Error opening file: " << arg[1] << "\n";
+    return 1;
+  }
+
+  /*
   string line;
-  int index = 0;
-  int dist = 0;
+  int numVertices = 0;
   getline(file, line);
-  int line = stoi(line); // can't do this, line is a string value declared above
+  numVertices = stoi(line); // can't do this, line is a string value declared above
   //AdjacencyList primAdjList = new AdjacencyList(line);  // reads in the first line's value which is how many vertices are in the file
   int source, dest, weight;
+  */
+
+  int numVertices;
+  int source;
+  file >> numVertices;
+  file >> source;
+
+  AdjacencyList primAdjList(numVertices);
+  AdjacencyMatrix primAdjMatrix(numVertices);
+
+  int u, v, weight;
   
-  while(file >> line){
-    file >> source;
-    source = stoi(source);
-    file >> dest;
-    dest = stoi(dest);
-    file >> weight;
-    weight = stoi(weight);
-    primAdjList.addingEdge(source, dest, weight);
+  while(file >> u >> v >> w){
+    primAdjList.addingEdge(u, v, w);
+    primAdjMatrix.addingEdge(u, v, w);
+  }
+
+  vector<int> listMST;
+  vector<pair<int, int>> matrixMST;
+  primAdjList.PrimMST(listMST, source);
+  primAdjMatrix.PrimMST(matrixMST, source);
+
+  cout << "Edges in the matrixMST:\n";
+  for (const auto& edge : mstEdges){
+    cout << (edge.first + 1) << " - " << (edge.second + 1) << "\n";
   }
 }
