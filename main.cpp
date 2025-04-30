@@ -47,7 +47,7 @@ int main(int argc, char* argv[]){
     primAdjMatrix.addingEdge(u, v, weight);
   }
 
-  vector<int> listMST;
+  vector<pair<int, int>> listMST;
   vector<pair<int, int>> matrixMST;
 
   clock_t startList = clock();

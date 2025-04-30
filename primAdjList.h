@@ -6,6 +6,7 @@
 #include <iostream>
 //#include <ctime>
 #include <limits>
+#include <queue>
 
 using namespace std;
 #define INF numeric_limits<int>::max()
@@ -33,7 +34,7 @@ public:
   ~AdjacencyList();
 
   void addingEdge(int source, int dest, int weight);
-  void PrimMST(vector<int>& MST, int source);
+  void PrimMST(vector<pair<int, int>>& MST, int source);
 };
 
 #endif

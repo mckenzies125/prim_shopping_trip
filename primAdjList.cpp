@@ -82,12 +82,47 @@ AdjacencyList::~AdjacencyList(){
   }
 */
 
-void AdjacencyList::PrimMST(vector<int>& MST, int source){
-  MST.clear();
+void AdjacencyList::PrimMST(vector<pair<int, int>>& MST, int source){
+  //MST.clear();
+  vector<int> key(vertices, INF);
+  vector<int> parent(vertices, -1);
   vector<bool> inMST(vertices, false);
-  MST.push_back(source);
-  inMST[source] = true;
-  
+  //MST.push_back(source);
+  //inMST[source] = true;
+
+  priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> prioQueue;
+
+  key[source] = 0;
+  prioQueue.push({0, source});
+
+  while (!prioQueue.empty()){
+    int u = prioQueue.top().second;
+    prioQueue.pop();
+
+    if (inMST[u]){
+      continue;
+    }
+
+    inMST[u] = true;
+
+    if (parent[u] != -1){
+      MST.push_back({parent[u], u});
+    }
+
+    Node *curr = adjList[u];
+    while (curr != nullptr){
+      int v = curr->index;
+      int weight = curr->dist;
+      if ((!inMST[v]) && (weight < key[v])){
+	key[v] = weight;
+	parent[v] = u;
+	prioQueue.push({key[v], v});
+      }
+      curr = curr->next;
+    }
+  }
+
+  /*
   while (MST.size() < vertices){
     int minWeight = INF;
     Node *lightEdge = nullptr;
@@ -113,4 +148,5 @@ void AdjacencyList::PrimMST(vector<int>& MST, int source){
       break;
     }
   }
+  */
 }
