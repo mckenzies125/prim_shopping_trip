@@ -11,41 +11,12 @@ void AdjacencyList::addingEdge(int source, int dest, int weight){
   adjList[dest] = newNode;
 }
 
-/*
-  void findEdge(vector<int> MST){
-  for (int i = 0; i < MST.size(); i++){
-  int linkedListIndex = MST[i];
-  Node* head = adjList[linkedListIndex];
-  traverseLinkedList(head);
-  }
-  
-  }
-  
-  void traverseLinkedList(Node* head){
-  Node* temp = head;
-  while (temp!=nullptr){
-  bool in_not_MST = false;
-  for (int i = 0; i < not_MST.size(); i++){
-  if (temp.index == not_MST[i]){
-  in_not_MST = true;
-  }
-  }
-  if ((temp.dist < minWeight) && (in_not_MST)){
-  lightEdge = temp;
-  minWeight = temp.dist;
-  }
-  temp = temp->next;
-  }
-  }
-  // My idea for how this would work is we pass in the set. Then we will parse each node in the set and use a helper function that takes in a single source node from the set that returns the light edge from that source node. When we get to this function, we will then compare the edge candidates and then choose the best option.
-  */
-
 AdjacencyList::AdjacencyList(int v){
-  vertices = v;
-  adjList.resize(vertices, nullptr);
+  vertices = v; 
+  adjList.resize(vertices, nullptr); //initializing the size of the adjList with the number of vertices & their pointers
 }
 
-AdjacencyList::~AdjacencyList(){
+AdjacencyList::~AdjacencyList(){ //destructor bc of nodes/pointers/linked list
   for (int i = 0; i < vertices; i++){
     Node *curr = adjList[i];
     while (curr != nullptr){
@@ -55,73 +26,47 @@ AdjacencyList::~AdjacencyList(){
     }
   }
 }
-/*
-  void PrimMST(vector<int>& MST, int source){
-  
-  for(int i = 0; i < vertices; i++){
-  not_MST.push_back(i); //initalize set of all vertices
-  }
-  
-  MST.clear();
-  vector<bool> inMST(vertices, false);
-  MST.push_back(source); //starting vertex is 0
-  inMST[source] = true;//need to remove 0 from not_MST
-  //    int capacity = not_MST.size();
-  //not_MST[source] = not_MST[capacity - 1];
-  //not_MST.erase(remove(not_MST.begin(), not_MST.end(), source), not_MST.end());
-  //capacity--;
-  while(MST.size() < vertices){
-  lightEdge = nullptr;
-  findEdge(MST);
-  if(lightEdge != nullptr){
-  int newVert = lightEdge->index;
-  MST.push_back(newVert); //adds lightest edge to MST
-  //need to remove vertices from not_MST
-  }
-  }
-  }
-*/
 
-void AdjacencyList::PrimMST(vector<pair<int, int>>& MST, int source){
-  //MST.clear();
-  vector<int> key(vertices, INF);
-  vector<int> parent(vertices, -1);
-  vector<bool> inMST(vertices, false);
-  //MST.push_back(source);
-  //inMST[source] = true;
+void AdjacencyList::PrimMST(vector<pair<int, int>>& MST, int source){ //pair = two nodes connecting specified edge. MST is made up of edges (but edges are defined by the nodes that connect them, hence we input a pair of nodes)
+  vector<int> key(vertices, INF); //how to identify vertices. Defined by distance from source--initializing as inf
+  vector<int> parent(vertices, -1); // vertex that comes before specified vertex in MST--initialize to -1
+  vector<bool> inMST(vertices, false); //initialize bool vector inMST--nothing is in "inMST," hence all is false
 
-  priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> prioQueue;
+  //pair = 2 nodes connecting edge, vector = how we store the pair of nodes, greater = compares edges to maintain min heap properties
+  priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> prioQueue; 
 
-  key[source] = 0;
-  prioQueue.push({0, source});
+  key[source] = 0; //find source vertex--setting source to 0
+  prioQueue.push({0, source});//add source and distance from source (0) to the priority queue
 
-  while (!prioQueue.empty()){
-    int u = prioQueue.top().second;
-    prioQueue.pop();
+  while (!prioQueue.empty()){ //while there is a "graph"
+    int u = prioQueue.top().second; //look at min dist (source node in this case) then look at second int val (node that is 1 edge away from source)
+    prioQueue.pop(); //remove that node
 
-    if (inMST[u]){
+    if (inMST[u]){ //check if removed node is already in the min spanning tree (in this case, just 0) 
       continue;
     }
 
-    inMST[u] = true;
+    inMST[u] = true; //set bool vector val to true, as the node is now in MST
 
-    if (parent[u] != -1){
-      MST.push_back({parent[u], u});
+    if (parent[u] != -1){ //if a parent exists (if the node before u exists)
+      MST.push_back({parent[u], u}); //add the parent to the MST
     }
-
-    Node *curr = adjList[u];
-    while (curr != nullptr){
-      int v = curr->index;
-      int weight = curr->dist;
-      if ((!inMST[v]) && (weight < key[v])){
-	key[v] = weight;
-	parent[v] = u;
-	prioQueue.push({key[v], v});
+    
+    Node *curr = adjList[u]; //set curr to the a node adjacent to u in adjacency list (in this case, the head of linkedlist associated with u)
+    while (curr != nullptr){ //traverse u's adjacency list
+      int v = curr->index; //set v to the index (how to identify v)
+      int weight = curr->dist; //set weight to adjacent node's distance from u
+      if ((!inMST[v]) && (weight < key[v])){ // check if v is already in MST and if the weight of v the "shortest" path to MST (aka if weight is shorter than the currently stored path to MST--key[v])
+	key[v] = weight; //then set shortest path from v to MST to be weight
+	parent[v] = u; //let v's parent be u (u is on the path to source)
+	prioQueue.push({key[v], v}); //add v and it's weight to MST to the priority queue
       }
-      curr = curr->next;
+      curr = curr->next; //go to next node in u's adjacency list & continue to traverse list
     }
   }
-
+  
+  //original idea, however resulted in time complexity O(V*E)...we needed a better time complexity to prove the benefits of an adjacency list:
+  
   /*
   while (MST.size() < vertices){
     int minWeight = INF;

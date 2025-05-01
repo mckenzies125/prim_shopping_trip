@@ -6,39 +6,16 @@ AdjacencyMatrix::AdjacencyMatrix(int vertexes){
 }
 
 void AdjacencyMatrix::addingEdge(int source, int dest, int weight){
-  adjMatrix[source][dest] = weight;
-  adjMatrix[dest][source] = weight;
+  adjMatrix[source][dest] = weight; //initialize entries in matrix with weights of edges
+  adjMatrix[dest][source] = weight; //reverse 
 }
 
-/*
-  int findEdge(vector<int> MST){ // returned int is the vertex # of the matrixColumn
-  for (int i = 0; i < MST.size(); i++){
-  tempMatrixRow = MST[i];
-  for (int j = 1; j < adjMatrix.vertexes + 1; j++){
-  bool in_not_MST = false;
-  for (int k = 0; k < not_MST.size(); k++){
-  if (j == not_MST[k]){
-  in_not_MST = true;
-  }
-  }
-  if ((adjMatrix[tempMatrixRow][j] < minWeight) && (in_not_MST)){
-  minWeight = adjMatrix[tempMatrixRow][j];
-  matrixRow = tempMatrixRow;
-  return j;
-  }
-  }
-  }
-  return -1; //error handle this
-  }
-*/
-
 void AdjacencyMatrix::PrimMST(vector<pair<int, int>>& MST, int source){
-  //MST.clear();
-  vector<bool> inMST(vertices, false);
-  vector<int> key(vertices, INF);
-  vector<int> parent(vertices, -1);
+  vector<bool> inMST(vertices, false); //initializing bool vector for inMST
+  vector<int> key(vertices, INF); //weights of each edge is inf
+  vector<int> parent(vertices, -1); // for printing purposes! Allows us to compare to adjList
   
-  key[source] = 0;
+  key[source] = 0; //set source to 0
   
   for (int count = 0; count < vertices; count++){
     int u = minKeyVertex(key, inMST);
@@ -46,22 +23,20 @@ void AdjacencyMatrix::PrimMST(vector<pair<int, int>>& MST, int source){
       break;
     }
     
-    inMST[u] = true;
-    
-    //MST.push_back(u);
+    inMST[u] = true; //now in MST so true
     
     for (int v = 0; v < vertices; v++){
-      if ((adjMatrix[u][v] != INF) && (!inMST[v]) && adjMatrix[u][v] < key[v]){
-	key[v] = adjMatrix[u][v];
-	parent[v] = u;
+      if ((adjMatrix[u][v] != INF) && (!inMST[v]) && (adjMatrix[u][v] < key[v])){ //if there is an edge between specified nodes AND node v is not already in the MST AND the weight of the edge connecting these nodes is less than the v's currently identified light edge
+	key[v] = adjMatrix[u][v]; //make this edge v's light edge 
+	parent[v] = u; //make v's parent u, as u is now on v's path to source
       }
     }
   }
   
-  MST.clear();
+  MST.clear(); //performed bc we've stored all relevant edges in parent vector
   for (int v = 0; v < vertices; v++){
-    if (parent[v] != -1){
-      MST.push_back({parent[v], v});
+    if (parent[v] != -1){ //check if connected/won't be on path and will break
+      MST.push_back({parent[v], v}); //add v and its parent to MST!
     }
   }
 }

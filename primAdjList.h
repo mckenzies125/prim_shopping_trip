@@ -2,9 +2,7 @@
 #define PRIM_ADJ_LIST_H
 
 #include <vector>
-//#include "prim_shopping_trip.h"
 #include <iostream>
-//#include <ctime>
 #include <limits>
 #include <queue>
 
